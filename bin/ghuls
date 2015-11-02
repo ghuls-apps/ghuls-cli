@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+path = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(path)
+
+require_relative '../lib/ghuls'
+
+cli = GHULS::CLI.new
+cli.run
