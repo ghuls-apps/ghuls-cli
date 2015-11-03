@@ -2,7 +2,7 @@ require 'octokit'
 require 'base64'
 require 'rainbow'
 require 'progress_bar'
-require 'ghuls'
+require 'ghuls/lib'
 
 module GHULS
   class CLI
@@ -12,10 +12,10 @@ module GHULS
       args.each do |arg|
         case arg
         when '-h', '--help' then @opts[:help] = true
-        when '-un', '--user' then @opts[:user] = Utilities.get_next(arg, args)
-        when '-pw', '--pass' then @opts[:pass] = Utilities.get_next(arg, args)
-        when '-t', '--token' then @opts[:token] = Utilities.get_next(arg, args)
-        when '-g', '--get' then @opts[:get] = Utilities.get_next(arg, args)
+        when '-un', '--user' then @opts[:user] = GHULS::Lib.get_next(arg, args)
+        when '-pw', '--pass' then @opts[:pass] = GHULS::Lib.get_next(arg, args)
+        when '-t', '--token' then @opts[:token] = GHULS::Lib.get_next(arg, args)
+        when '-g', '--get' then @opts[:get] = GHULS::Lib.get_next(arg, args)
         when '-d', '--debug' then @opts[:debug] = true
         when '-r', '--random' then @opts[:get] = nil
         end
@@ -52,7 +52,7 @@ module GHULS
       parse_options(args)
       @bar = ProgressBar.new(5) if @opts[:debug]
       increment
-      config = Utilities.configure_stuff(@opts)
+      config = GHULS::Lib.configure_stuff(@opts)
       increment
       if config == false
         puts 'Error: authentication failed, check your username/password ' \
@@ -74,7 +74,7 @@ module GHULS
 
     def output(percents)
       percents.each do |l, p|
-        color = Utilities.get_color_for_language(l.to_s, @colors)
+        color = GHULS::Lib.get_color_for_language(l.to_s, @colors)
         puts Rainbow("#{l}: #{p}%").color(color)
       end
     end
@@ -94,10 +94,10 @@ module GHULS
       puts @help if @opts[:help]
       exit if failed?
       increment
-      @opts[:get] = Utilities.get_random_user(@gh) if @opts[:get].nil?
-      user_percents = Utilities.analyze_user(@opts[:get], @gh)
+      @opts[:get] = GHULS::Lib.get_random_user(@gh) if @opts[:get].nil?
+      user_percents = GHULS::Lib.analyze_user(@opts[:get], @gh)
       increment
-      org_percents = Utilities.analyze_orgs(@opts[:get], @gh)
+      org_percents = GHULS::Lib.analyze_orgs(@opts[:get], @gh)
       increment
 
       if user_percents != false

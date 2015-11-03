@@ -1,5 +1,11 @@
 # Changelog
 ## Version 1
+### Version 1.4.1
+* Update to use ghuls-lib 1.1.1.
+
+### Version 1.4.0
+* Update to use new ghuls-lib gem.
+
 ### Version 1.3.0
 * New -d --debug option to show a progress bar.
 
