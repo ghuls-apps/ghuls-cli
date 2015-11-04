@@ -1,5 +1,9 @@
 # Changelog
 ## Version 1
+### Version 1.4.2
+* Update to require ghuls-lib 1.1.3 for a major bug fix.
+* Actually require certain minimum versions of things.
+
 ### Version 1.4.1
 * Update to use ghuls-lib 1.1.1.
 
