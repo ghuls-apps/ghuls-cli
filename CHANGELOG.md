@@ -1,5 +1,11 @@
 # Changelog
 ## Version 1
+### Version 1.4.3
+* Update to use ghuls-lib 1.2.1.
+* Provides slightly more information.
+* Will now analyze the organizations even if the user does not have any personal repositories.
+* Data output uses the username given by the lib instead of the one entered in the arguments. This provides more accurate casing. For example, if you entered "programfox", it will use "ProgramFOX".
+
 ### Version 1.4.2
 * Update to require ghuls-lib 1.1.3 for a major bug fix.
 * Actually require certain minimum versions of things.

@@ -95,22 +95,29 @@ module GHULS
       exit if failed?
       increment
       @opts[:get] = GHULS::Lib.get_random_user(@gh) if @opts[:get].nil?
-      user_percents = GHULS::Lib.analyze_user(@opts[:get], @gh)
-      increment
-      org_percents = GHULS::Lib.analyze_orgs(@opts[:get], @gh)
-      increment
 
-      if user_percents != false
-        puts "Getting language data for #{@opts[:get]}..."
-        output(user_percents)
-        if org_percents != false
+      user = GHULS::Lib.get_user_and_check(@opts[:get], @gh)
+      if user == false
+        puts 'Sorry, something wen\'t wrong.'
+        puts "We could not find any user named #{@opts[:get]}."
+        puts 'If you believe this is an error, please report it as a bug.'
+      else
+        user_percents = GHULS::Lib.analyze_user(@opts[:get], @gh)
+        increment
+        org_percents = GHULS::Lib.analyze_orgs(@opts[:get], @gh)
+        increment
+        if !user_percents.nil?
+          puts "Getting language data for #{user[:username]}..."
+          output(user_percents)
+        else
+          puts 'Could not find any personal data to analyze.'
+        end
+        if !org_percents.nil?
           puts 'Getting language data for their organizations...'
           output(org_percents)
         else
-          exit
+          puts 'Could not find any organizaztion data to analyze.'
         end
-      else
-        fail_after_analyze
       end
       exit
     end
