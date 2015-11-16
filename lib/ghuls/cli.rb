@@ -60,6 +60,7 @@ module GHULS
         exit
       end
       @gh = config[:git]
+      @gh.auto_paginate = true
       @colors = config[:colors]
     end
 
@@ -102,21 +103,31 @@ module GHULS
         puts "We could not find any user named #{@opts[:get]}."
         puts 'If you believe this is an error, please report it as a bug.'
       else
-        user_percents = GHULS::Lib.analyze_user(@opts[:get], @gh)
+        user_langs = GHULS::Lib.analyze_user(@opts[:get], @gh)
+        user_percents = nil
         increment
-        org_percents = GHULS::Lib.analyze_orgs(@opts[:get], @gh)
+        org_langs = GHULS::Lib.analyze_orgs(@opts[:get], @gh)
+        org_percents = nil
         increment
-        if !user_percents.nil?
+        if !user_langs.nil?
           puts "Getting language data for #{user[:username]}..."
+          user_percents = GHULS::Lib.get_language_percentages(user_langs)
           output(user_percents)
         else
           puts 'Could not find any personal data to analyze.'
         end
-        if !org_percents.nil?
+        if !org_langs.nil?
           puts 'Getting language data for their organizations...'
+          org_percents = GHULS::Lib.get_language_percentages(org_langs)
           output(org_percents)
         else
           puts 'Could not find any organizaztion data to analyze.'
+        end
+
+        unless org_langs.nil? && user_langs.nil?
+          user_langs.update(org_langs) { |_, v1, v2| v1 + v2 }
+          puts 'Getting combined language data...'
+          output(GHULS::Lib.get_language_percentages(user_langs))
         end
       end
       exit
