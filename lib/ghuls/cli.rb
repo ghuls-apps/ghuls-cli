@@ -89,6 +89,67 @@ module GHULS
       exit
     end
 
+    # Gets and outputs language data for the user and their organizations.
+    # @param username [String] The username of the user.
+    def language_data(username)
+      user_langs = GHULS::Lib.get_user_langs(@opts[:get], @gh)
+      increment
+      org_langs = GHULS::Lib.get_org_langs(@opts[:get], @gh)
+      increment
+      if !user_langs.empty?
+        puts "Getting language data for #{username}..."
+        user_percents = GHULS::Lib.get_language_percentages(user_langs)
+        output(user_percents)
+      else
+        puts 'Could not find any personal data to analyze.'
+      end
+      if !org_langs.empty?
+        puts 'Getting language data for their organizations...'
+        org_percents = GHULS::Lib.get_language_percentages(org_langs)
+        output(org_percents)
+      else
+        puts 'Could not find any organization data to analyze.'
+      end
+
+      return if org_langs.empty? && user_langs.empty?
+
+      user_langs.update(org_langs) { |_, v1, v2| v1 + v2 }
+      puts 'Getting combined language data...'
+      output(GHULS::Lib.get_language_percentages(user_langs))
+    end
+
+    def fork_data(repos)
+      repos[:public].each do |r|
+        next if repos[:forks].include? r
+        fsw = GHULS::Lib.get_forks_stars_watchers(r, @gh)
+        puts "#{r}: #{fsw[:forks]} forks, #{fsw[:stars]} stars, and " \
+             "#{fsw[:watchers]} watchers"
+      end
+    end
+
+    def follower_data(username)
+      follows = GHULS::Lib.get_followers_following(@opts[:get], @gh)
+      followers = Rainbow("#{follows[:followers]} followers").green
+      following = Rainbow("following #{follows[:following]}").color('#FFA500')
+      puts "#{username} has #{followers} and is #{following} people"
+    end
+
+    def issue_data(repos)
+      puts 'Getting issue and pull request data...'
+      repos[:public].each do |r|
+        next if repos[:forks].include? r
+        things = GHULS::Lib.get_issues_pulls(r, @gh)
+        open_issues = Rainbow("#{things[:issues][:open]} open").green
+        closed_issues = Rainbow("#{things[:issues][:closed]} closed").red
+        open_pulls = Rainbow("#{things[:pulls][:open]} open").green
+        closed_pulls = Rainbow("#{things[:pulls][:closed]} closed").red
+        merged_pulls = Rainbow("#{things[:pulls][:merged]} merged").magenta
+        puts "Issue data for #{r}: #{open_issues} and #{closed_issues}"
+        puts "Pull data for #{r}: #{open_pulls}, #{merged_pulls}, " \
+             "and #{closed_pulls}"
+      end
+    end
+
     # Simply runs the program.
     def run
       puts @usage if failed?
@@ -103,32 +164,17 @@ module GHULS
         puts "We could not find any user named #{@opts[:get]}."
         puts 'If you believe this is an error, please report it as a bug.'
       else
-        user_langs = GHULS::Lib.analyze_user(@opts[:get], @gh)
-        user_percents = nil
-        increment
-        org_langs = GHULS::Lib.analyze_orgs(@opts[:get], @gh)
-        org_percents = nil
-        increment
-        if !user_langs.nil?
-          puts "Getting language data for #{user[:username]}..."
-          user_percents = GHULS::Lib.get_language_percentages(user_langs)
-          output(user_percents)
-        else
-          puts 'Could not find any personal data to analyze.'
-        end
-        if !org_langs.nil?
-          puts 'Getting language data for their organizations...'
-          org_percents = GHULS::Lib.get_language_percentages(org_langs)
-          output(org_percents)
-        else
-          puts 'Could not find any organizaztion data to analyze.'
-        end
-
-        unless org_langs.nil? && user_langs.nil?
-          user_langs.update(org_langs) { |_, v1, v2| v1 + v2 }
-          puts 'Getting combined language data...'
-          output(GHULS::Lib.get_language_percentages(user_langs))
-        end
+        @repos = GHULS::Lib.get_user_repos(@opts[:get], @gh)
+        @org_repos = GHULS::Lib.get_org_repos(@opts[:get], @gh)
+        language_data(user[:username])
+        puts 'Getting forks, stars, and watchers of user repositories...'
+        fork_data(@repos)
+        puts 'Getting forks, stars, and watchers of ' \
+             'organization repositories...'
+        fork_data(@org_repos)
+        follower_data(user[:username])
+        issue_data(@repos)
+        issue_data(@org_repos)
       end
       exit
     end

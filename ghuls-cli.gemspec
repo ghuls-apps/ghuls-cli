@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('octokit', '>= 4.0.1')
   s.add_runtime_dependency('rainbow', '>= 2.0.0')
   s.add_runtime_dependency('string-utility', '>= 2.5.0')
-  s.add_runtime_dependency('ghuls-lib', '>= 2.0.2')
+  s.add_runtime_dependency('ghuls-lib', '>= 2.1.1')
   s.add_runtime_dependency('progress_bar', '>= 1.0.5')
 end
