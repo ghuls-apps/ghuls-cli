@@ -3,19 +3,21 @@ require 'base64'
 require 'rainbow'
 require 'progress_bar'
 require 'ghuls/lib'
+require 'array_utility'
 
 module GHULS
   class CLI
+    using ArrayUtility
     # Parses the arguments (typically ARGV) into a usable hash.
     # @param args [Array] The arguments to parse.
     def parse_options(args)
       args.each do |arg|
         case arg
         when '-h', '--help' then @opts[:help] = true
-        when '-un', '--user' then @opts[:user] = GHULS::Lib.get_next(arg, args)
-        when '-pw', '--pass' then @opts[:pass] = GHULS::Lib.get_next(arg, args)
-        when '-t', '--token' then @opts[:token] = GHULS::Lib.get_next(arg, args)
-        when '-g', '--get' then @opts[:get] = GHULS::Lib.get_next(arg, args)
+        when '-un', '--user' then @opts[:user] = args.next(arg)
+        when '-pw', '--pass' then @opts[:pass] = args.next(arg)
+        when '-t', '--token' then @opts[:token] = args.next(arg)
+        when '-g', '--get' then @opts[:get] = args.next(arg)
         when '-d', '--debug' then @opts[:debug] = true
         when '-r', '--random' then @opts[:get] = nil
         end
@@ -60,7 +62,6 @@ module GHULS
         exit
       end
       @gh = config[:git]
-      @gh.auto_paginate = true
       @colors = config[:colors]
     end
 

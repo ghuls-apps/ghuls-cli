@@ -1,5 +1,11 @@
 # Changelog
 ## Version 1
+### Version 1.5.0
+* Data about issues, pulls, forks, stargazers, watchers, followers, following, and repository category totals is now available (#2).
+* Now uses GHULS::Lib 2.2.0 and StringUtility 2.6.0, which provide a lot of performance improvements.
+* array_utility is now a dependency because get_next will be removed from GHUS::Lib in its next version.
+* Data for combined organization and personal repository languages is now available.
+
 ### Version 1.4.3
 * Update to use ghuls-lib 1.2.1.
 * Provides slightly more information.
