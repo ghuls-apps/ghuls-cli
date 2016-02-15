@@ -2,10 +2,13 @@ require 'paint'
 require 'progress_bar'
 require 'ghuls/lib'
 require 'array_utility'
+require 'string-utility'
+require 'github/calendar'
 
 module GHULS
   class CLI
     using ArrayUtility
+    using StringUtility
 
     # Parses the arguments (typically ARGV) into a usable hash.
     # @param args [Array] The arguments to parse.
@@ -148,6 +151,33 @@ module GHULS
       end
     end
 
+    def calendar_data(username)
+      puts "Total contributions this year: #{GitHub::Calendar.get_total_year(username).to_s.separate}"
+      puts "An average day has #{GitHub::Calendar.get_average_day(username).to_s.separate} contributions"
+      puts "An average week has #{GitHub::Calendar.get_average_week(username).to_s.separate} contributions"
+      puts "An average month has #{GitHub::Calendar.get_average_month(username).to_s.separate} contributions"
+      puts "Current contribution streak is #{GitHub::Calendar.get_current_streak(username).to_s.separate} days"
+      puts "Longest contribution streak is #{GitHub::Calendar.get_longest_streak(username).to_s.separate} days"
+      GitHub::Calendar.get_monthly(username).each do |month, amount|
+        month_name = case month
+                     when '01' then 'January'
+                     when '02' then 'February'
+                     when '03' then 'March'
+                     when '04' then 'April'
+                     when '05' then 'May'
+                     when '06' then 'June'
+                     when '07' then 'July'
+                     when '08' then 'August'
+                     when '09' then 'September'
+                     when '10' then 'October'
+                     when '11' then 'November'
+                     when '12' then 'December'
+                     else month
+                     end
+        puts "#{month_name} had #{amount.to_s.separate} contributions"
+      end
+    end
+
     # Simply runs the program.
     def run
       puts @usage if failed?
@@ -172,6 +202,7 @@ module GHULS
         follower_data(user[:username])
         issue_data(@repos)
         issue_data(@org_repos)
+        calendar_data(user[:username])
       end
       exit
     end

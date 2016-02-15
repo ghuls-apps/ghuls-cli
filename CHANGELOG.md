@@ -1,5 +1,8 @@
 # Changelog
 ## Version 1
+### Version 1.7.0
+* Add data provided by github-calendar (#2).
+
 ### Version 1.6.0
 * Update dependency versions.
   * ruby: 2.2.3 -> 2.3.0
