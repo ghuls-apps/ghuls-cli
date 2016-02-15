@@ -1,6 +1,4 @@
-require 'octokit'
-require 'base64'
-require 'rainbow'
+require 'paint'
 require 'progress_bar'
 require 'ghuls/lib'
 require 'array_utility'
@@ -8,6 +6,7 @@ require 'array_utility'
 module GHULS
   class CLI
     using ArrayUtility
+
     # Parses the arguments (typically ARGV) into a usable hash.
     # @param args [Array] The arguments to parse.
     def parse_options(args)
@@ -20,6 +19,7 @@ module GHULS
         when '-g', '--get' then @opts[:get] = args.next(arg)
         when '-d', '--debug' then @opts[:debug] = true
         when '-r', '--random' then @opts[:get] = nil
+        else next
         end
       end
     end
@@ -57,8 +57,7 @@ module GHULS
       config = GHULS::Lib.configure_stuff(@opts)
       increment
       if config == false
-        puts 'Error: authentication failed, check your username/password ' \
-             ' or token'
+        puts 'Error: authentication failed, check your username/password or token'
         exit
       end
       @gh = config[:git]
@@ -77,7 +76,7 @@ module GHULS
     def output(percents)
       percents.each do |l, p|
         color = GHULS::Lib.get_color_for_language(l.to_s, @colors)
-        puts Rainbow("#{l}: #{p}%").color(color)
+        puts Paint["#{l}: #{p}%", color]
       end
     end
 
@@ -123,15 +122,14 @@ module GHULS
       repos[:public].each do |r|
         next if repos[:forks].include? r
         fsw = GHULS::Lib.get_forks_stars_watchers(r, @gh)
-        puts "#{r}: #{fsw[:forks]} forks, #{fsw[:stars]} stars, and " \
-             "#{fsw[:watchers]} watchers"
+        puts "#{r}: #{fsw[:forks]} forks, #{fsw[:stars]} stars, and #{fsw[:watchers]} watchers"
       end
     end
 
     def follower_data(username)
       follows = GHULS::Lib.get_followers_following(@opts[:get], @gh)
-      followers = Rainbow("#{follows[:followers]} followers").green
-      following = Rainbow("following #{follows[:following]}").color('#FFA500')
+      followers = Paint["#{follows[:followers]} followers", :green]
+      following = Paint["following #{follows[:following]}", '#FFA500']
       puts "#{username} has #{followers} and is #{following} people"
     end
 
@@ -140,14 +138,13 @@ module GHULS
       repos[:public].each do |r|
         next if repos[:forks].include? r
         things = GHULS::Lib.get_issues_pulls(r, @gh)
-        open_issues = Rainbow("#{things[:issues][:open]} open").green
-        closed_issues = Rainbow("#{things[:issues][:closed]} closed").red
-        open_pulls = Rainbow("#{things[:pulls][:open]} open").green
-        closed_pulls = Rainbow("#{things[:pulls][:closed]} closed").red
-        merged_pulls = Rainbow("#{things[:pulls][:merged]} merged").magenta
+        open_issues = Paint["#{things[:issues][:open]} open", :green]
+        closed_issues = Paint["#{things[:issues][:closed]} closed", :red]
+        open_pulls = Paint["#{things[:pulls][:open]} open", :green]
+        closed_pulls = Paint["#{things[:pulls][:closed]} closed", :red]
+        merged_pulls = Paint["#{things[:pulls][:merged]} merged", :magenta]
         puts "Issue data for #{r}: #{open_issues} and #{closed_issues}"
-        puts "Pull data for #{r}: #{open_pulls}, #{merged_pulls}, " \
-             "and #{closed_pulls}"
+        puts "Pull data for #{r}: #{open_pulls}, #{merged_pulls}, and #{closed_pulls}"
       end
     end
 
@@ -170,8 +167,7 @@ module GHULS
         language_data(user[:username])
         puts 'Getting forks, stars, and watchers of user repositories...'
         fork_data(@repos)
-        puts 'Getting forks, stars, and watchers of ' \
-             'organization repositories...'
+        puts 'Getting forks, stars, and watchers of organization repositories...'
         fork_data(@org_repos)
         follower_data(user[:username])
         issue_data(@repos)

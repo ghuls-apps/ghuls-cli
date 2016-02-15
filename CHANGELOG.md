@@ -1,5 +1,14 @@
 # Changelog
 ## Version 1
+### Version 1.6.0
+* Update dependency versions.
+  * ruby: 2.2.3 -> 2.3.0
+  * ghuls-lib: 2.2.3 -> 2.3.1
+  * array_utility: 1.0.0 -> 1.1.0
+* Remove unneeded dependencies, string-utility and octokit, as they are required by ghuls-lib.
+* Replace Rainbow usage with Paint, because it is arguably simpler, and certainly faster.
+* Clean up some code style issues.
+
 ### Version 1.5.0
 * Data about issues, pulls, forks, stargazers, watchers, followers, following, and repository category totals is now available (#2).
 * Now uses GHULS::Lib 2.2.0 and StringUtility 2.6.0, which provide a lot of performance improvements.
