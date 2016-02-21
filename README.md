@@ -1,4 +1,6 @@
 # ghuls-cli
+[![Gem Version](https://badge.fury.io/rb/ghuls.svg)](https://badge.fury.io/rb/ghuls)
+
 The command line application for GHULS
 
 ## Gem Installation
