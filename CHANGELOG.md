@@ -1,5 +1,9 @@
 # Changelog
 ## Version 1
+### Version 1.7.1
+* Use pessimistic version requirements.
+* License as MIT.
+
 ### Version 1.7.0
 * Add data provided by github-calendar (#2).
 
