@@ -1,5 +1,8 @@
 # Changelog
 ## Version 1
+### Version 1.7.2
+* Require github-calendar in the gemspec.
+
 ### Version 1.7.1
 * Use pessimistic version requirements.
 * License as MIT.

@@ -21,4 +21,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('progress_bar', '~> 1.0')
   s.add_runtime_dependency('array_utility', '~> 1.0')
   s.add_runtime_dependency('string-utility', '~> 2.7')
+  s.add_runtime_dependency('github-calendar', '~> 1.2')
 end
