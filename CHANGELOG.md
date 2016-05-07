@@ -1,5 +1,8 @@
 # Changelog
 ## Version 1
+### Version 1.8.0
+* Update to ghuls-lib 3.0.
+
 ### Version 1.7.2
 * Require github-calendar in the gemspec.
 
