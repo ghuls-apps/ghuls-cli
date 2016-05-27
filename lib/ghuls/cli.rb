@@ -154,8 +154,6 @@ module GHULS
       puts "An average day has #{GitHub::Calendar.get_average_day(username).to_s.separate} contributions"
       puts "An average week has #{GitHub::Calendar.get_average_week(username).to_s.separate} contributions"
       puts "An average month has #{GitHub::Calendar.get_average_month(username).to_s.separate} contributions"
-      puts "Current contribution streak is #{GitHub::Calendar.get_current_streak(username).to_s.separate} days"
-      puts "Longest contribution streak is #{GitHub::Calendar.get_longest_streak(username).to_s.separate} days"
       GitHub::Calendar.get_monthly(username).each do |month, amount|
         month_name = case month
                      when '01' then 'January'

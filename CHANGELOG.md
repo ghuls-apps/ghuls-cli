@@ -1,5 +1,8 @@
 # Changelog
 ## Version 1
+### Version 1.8.1
+* Update for github-calendar 1.3
+
 ### Version 1.8.0
 * Update to ghuls-lib 3.0.
 
